@@ -4,7 +4,7 @@ This repository demonstrates how to build a modern Node.js web application that 
 
 ## Getting Started
 
-See [Tutorial: Build an agentic web app in Azure App Service with LangGraph or Azure AI Foundry Agent Service (Node.js)](https://learn.microsoft.com/azure/app-service/tutorial-ai-agentic-web-app-langgraph-foundry-node).
+See [Tutorial: Build an agentic web app in Azure App Service with LangGraph or Azure AI Foundry Agent Service (Node.js)](https://learn.microsoft.com/azure/app-service/tutorial-ai-agent-web-app-langgraph-foundry-node).
 
 ## Features
 
