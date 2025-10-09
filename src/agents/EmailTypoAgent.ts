@@ -62,6 +62,7 @@ export class EmailTypoAgent {
         }
     }
 
+    
     /**
      * Processes a user message by sending it to the Azure AI Foundry agent and returns the assistant's response.
      *
