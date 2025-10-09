@@ -3,6 +3,7 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import { TaskService } from '../services/TaskService';
 import { LangGraphTaskAgent } from '../agents/LangGraphTaskAgent';
 import { FoundryTaskAgent } from '../agents/FoundryTaskAgent';
+import { EmailTypoAgent } from '../agents/EmailTypoAgent';
 import { ChatRequest } from '../types';
 
 /**
@@ -27,7 +28,8 @@ import { ChatRequest } from '../types';
 export function createApiRoutes(
     taskService: TaskService, 
     langGraphAgent: LangGraphTaskAgent, 
-    foundryAgent: FoundryTaskAgent
+    foundryAgent: FoundryTaskAgent,
+    emailTypoAgent: EmailTypoAgent
 ): Router {
     const router = Router();
 
@@ -275,6 +277,23 @@ export function createApiRoutes(
             res.json(response);
         } catch (error) {
             console.error('Error in Foundry chat:', error);
+            res.status(500).json({ error: 'Failed to process message' });
+        }
+    });
+
+    router.post('/chat/emailtypo', async (req: Request, res: Response) => {
+        try {
+            const { message, sessionId }: ChatRequest = req.body;
+            
+            if (!message) {
+                res.status(400).json({ error: 'Message is required' });
+                return;
+            }
+
+            const response = await emailTypoAgent.processMessage(message);
+            res.json(response);
+        } catch (error) {
+            console.error('Error in EmailTypo chat:', error);
             res.status(500).json({ error: 'Failed to process message' });
         }
     });

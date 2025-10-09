@@ -9,6 +9,7 @@ import swaggerUI from 'swagger-ui-express';
 import { TaskService } from './services/TaskService';
 import { LangGraphTaskAgent } from './agents/LangGraphTaskAgent';
 import { FoundryTaskAgent } from './agents/FoundryTaskAgent';
+import { EmailTypoAgent } from './agents/EmailTypoAgent';
 import { createApiRoutes } from './routes/api';
 
 // Types
@@ -25,6 +26,7 @@ export class TaskManagerApp {
     private taskService: TaskService;
     private langGraphAgent: LangGraphTaskAgent;
     private foundryAgent: FoundryTaskAgent;
+    private emailTypoAgent: EmailTypoAgent;
 
     constructor() {
         this.app = express();
@@ -34,7 +36,8 @@ export class TaskManagerApp {
         this.taskService = new TaskService();
         this.langGraphAgent = new LangGraphTaskAgent(this.taskService);
         this.foundryAgent = new FoundryTaskAgent(this.taskService);
-        
+        this.emailTypoAgent = new EmailTypoAgent();
+
         this.setupMiddleware();
         this.setupRoutes();
     }
@@ -48,7 +51,7 @@ export class TaskManagerApp {
 
     private setupRoutes(): void {
         // Use the API routes module with /api prefix
-        const apiRouter = createApiRoutes(this.taskService, this.langGraphAgent, this.foundryAgent);
+        const apiRouter = createApiRoutes(this.taskService, this.langGraphAgent, this.foundryAgent,this.emailTypoAgent);
         this.app.use('/api', apiRouter);
 
         // Serve React app

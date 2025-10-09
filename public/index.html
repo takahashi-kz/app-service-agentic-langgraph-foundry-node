@@ -174,17 +174,20 @@
         function ChatInterface({ onChatResponse }) {
             const [messagesLangGraph, setMessagesLangGraph] = useState([]);
             const [messagesFoundry, setMessagesFoundry] = useState([]);
+            const [messagesEmailTypo, setMessagesEmailTypo] = useState([]);
             const [currentMessage, setCurrentMessage] = useState('');
             const [loading, setLoading] = useState(false);
             const [selectedAgent, setSelectedAgent] = useState('langgraph');
             const [sessionIds] = useState(() => ({
                 langgraph: Math.random().toString(36).substr(2, 9),
-                foundry: Math.random().toString(36).substr(2, 9)
+                foundry: Math.random().toString(36).substr(2, 9),
+                emailtypo: Math.random().toString(36).substr(2, 9)
             }));
 
             // Get current messages based on selected agent
-            const currentMessages = selectedAgent === 'langgraph' ? messagesLangGraph : messagesFoundry;
-            const setCurrentMessages = selectedAgent === 'langgraph' ? setMessagesLangGraph : setMessagesFoundry;
+            const currentMessages = selectedAgent === 'langgraph' ? messagesLangGraph : selectedAgent === 'foundry' ? messagesFoundry : messagesEmailTypo;
+            const setCurrentMessages = selectedAgent === 'langgraph' ? setMessagesLangGraph : selectedAgent === 'foundry' ? setMessagesFoundry : setMessagesEmailTypo;
+            const assistantName = selectedAgent === 'langgraph' ? 'LangGraph Assistant' : selectedAgent === 'foundry' ? 'Foundry Assistant' : 'EmailTypo Assistant';
 
             const sendMessage = async () => {
                 if (!currentMessage.trim() || loading) return;
@@ -195,7 +198,7 @@
                 setLoading(true);
 
                 try {
-                    const endpoint = selectedAgent === 'langgraph' ? '/api/chat/langgraph' : '/api/chat/foundry';
+                    const endpoint = selectedAgent === 'langgraph' ? '/api/chat/langgraph' : selectedAgent === 'foundry' ? '/api/chat/foundry' : '/api/chat/emailtypo';
                     const sessionId = sessionIds[selectedAgent];
                     
                     const response = await fetch(endpoint, {
@@ -266,6 +269,18 @@
                                 <label className="btn btn-outline-info" htmlFor="foundry">
                                     Foundry Agent
                                 </label>
+
+                                <input 
+                                    type="radio" 
+                                    className="btn-check" 
+                                    id="emailtypo" 
+                                    value="emailtypo"
+                                    checked={selectedAgent === 'emailtypo'}
+                                    onChange={(e) => setSelectedAgent(e.target.value)}
+                                />
+                                <label className="btn btn-outline-success" htmlFor="emailtypo">
+                                    EmailTypo Agent
+                                </label>
                             </div>
                         </div>
                         
@@ -275,7 +290,7 @@
                                     Start a conversation with the AI assistant<br/>
                                     for task management!<br/>
                                     <small>
-                                        Selected: {selectedAgent === 'langgraph' ? 'LangGraph Agent' : 'Azure AI Foundry Agent'}
+                                        Selected: {selectedAgent === 'langgraph' ? 'LangGraph Agent' : selectedAgent === 'foundry' ? 'Azure AI Foundry Agent' : 'EmailTypo Agent'}
                                     </small>
                                 </div>
                             ) : (
@@ -284,8 +299,7 @@
                                         message.role === 'user' ? 'bg-primary text-white ms-5' : 'bg-white me-5'
                                     }`}>
                                         <div className="fw-bold mb-1">
-                                            {message.role === 'user' ? 'You' : 
-                                             selectedAgent === 'langgraph' ? 'LangGraph Assistant' : 'Foundry Assistant'}
+                                            {message.role === 'user' ? 'You' : assistantName}
                                         </div>
                                         <div>{message.content}</div>
                                     </div>
@@ -294,7 +308,7 @@
                             {loading && (
                                 <div className="chat-message mb-3 p-2 rounded bg-white me-5">
                                     <div className="fw-bold mb-1">
-                                        {selectedAgent === 'langgraph' ? 'LangGraph Assistant' : 'Foundry Assistant'}
+                                        {assistantName}
                                     </div>
                                     <div>Thinking...</div>
                                 </div>
@@ -345,7 +359,7 @@
                 <div className="container py-4">
                     <div className="text-center mb-4">
                         <h1 className="display-4 text-primary">Task Manager with AI Agents</h1>
-                        <p className="lead">Manage your tasks with LangGraph and Azure AI Foundry agents</p>
+                        <p className="lead">Manage your tasks with LangGraph and Azure AI Foundry agents and EmailType agents</p>
                         <div className="badge bg-secondary">Node.js Version</div>
                     </div>
                     
@@ -360,7 +374,7 @@
                     
                     <div className="text-center mt-4">
                         <small className="text-muted">
-                            Built with Node.js, Express, LangGraph, and Azure AI Foundry
+                            Built with Node.js, Express, LangGraph, and Azure AI Foundry, and EmailTypo
                         </small>
                     </div>
                 </div>
